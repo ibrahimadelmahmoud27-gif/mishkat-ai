@@ -107,6 +107,11 @@ with st.sidebar:
     st.caption("المسار المفتوح | تحدي المحتوى الإسلامي 2026م")
     st.divider()
 
+    # زر مسح المحادثة لبدء جلسة نظيفة
+    if st.button("🗑️ مسح المحادثة وبدء جلسة جديدة"):
+        st.session_state.messages = []
+        st.rerun()
+
     st.subheader("🌐 لغة العرض والتوطين")
     selected_lang = st.radio("اختر اللغة / Language:", ["العربية (Arabic)", "English (المحتوى الموطن)"], index=0)
 
@@ -131,7 +136,7 @@ with st.sidebar:
     st.divider()
     st.caption("تطوير وهندسة: إبراهيم عادل | منصة مشكاة للذكاء الاصطناعي")
 
-# 6. التبويبات
+# 6. التبويبات الرئيسية
 tab_chat, tab_verifier, tab_dictionary = st.tabs([
     "💬 الحوار الموثوق",
     "🔍 أداة التحقق",
@@ -226,7 +231,6 @@ with tab_chat:
                     with st.spinner("جاري صياغة الإجابة المعتمدة..."):
                         generation_result = llm_router.generate_response(augmented_prompt)
 
-                    # إذا نجح LLM Router، نأخذ مخرجاته، وإلا نعرض النص المعتمد الأصلي مباشرة
                     if generation_result.get("success"):
                         response_text = generation_result["response"]
                     else:
