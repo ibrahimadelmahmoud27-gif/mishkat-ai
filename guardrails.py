@@ -11,7 +11,7 @@ class IslamicGuardrails:
             r"\bحضانة\b", r"\bخلع\b", r"\bمعاملات مالية معاصرة\b"
         ]
         
-        # 2. الأسئلة العقائدية القطعية (توجيه صارم للنص القرآني وصحيح السنة لمنع التأويل والهلوسة)
+        # 2. الأسئلة العقائدية القطعية
         self.aqeedah_keywords = [
             r"\bعذاب القبر\b", r"\bيوم القيامة\b", r"\bصفات الله\b", r"\bالملائكة\b", 
             r"\bالقدر\b", r"\bالجنة والنار\b", r"\bأركان الإيمان\b", r"\bالتوحيد\b"
@@ -24,7 +24,7 @@ class IslamicGuardrails:
                 "correct_text": "﴿قُلْ هُوَ اللَّهُ أَحَدٌ ۝ اللَّهُ الصَّمَدُ﴾",
                 "surah": "سورة الإخلاص",
                 "ayah": "1-2",
-                "note": "تصحيح رسم الآية وتصويب كلمة 'الصامد' إلى 'الصمد'."
+                "note": "تصحيح رسم الآية الكريمة وتصويب كلمة 'الصامد' إلى 'الصمد'."
             },
             {
                 "pattern": r"إن مع العسر يسر.*إن مع العسر يسر",
@@ -36,43 +36,37 @@ class IslamicGuardrails:
         ]
 
     def _check_patterns(self, text, patterns):
-        """فحص النص مقابل قائمة من الأنماط النصية"""
         for pattern in patterns:
             if re.search(pattern, text, re.IGNORECASE):
                 return True
         return False
 
     def check_quran_errors(self, text: str):
-        """فحص وجود أخطاء في نقل الآيات القرآنية والتنبيه بلطف (الحزمة المرجعية ص 6)"""
         for item in self.quran_correction_db:
             if re.search(item["pattern"], text, re.IGNORECASE):
                 return item
         return None
 
     def validate_query(self, user_query: str) -> dict:
-        """
-        الوظيفة الأساسية: فحص السؤال وتصنيفه قبل السماح بمروره لمحرك RAG.
-        ترجع قاموساً يحتوي على حالة القبول، التصنيف، مؤشر الثقة ورسالة الإحالة/التصحيح.
-        """
         clean_query = user_query.strip()
 
-        # الفحص 0: التحقق من طول السؤال وتصحيح العبارة المكررة
-        if len(clean_query.split()) < 2:
+        # الفحص 0: التحقق من طول السؤال وتصحيح الصياغة
+        if len(clean_query.split()) < 2 and "?" not in clean_query:
             return {
                 "is_safe": False,
                 "category": "Input_Too_Short",
                 "action": "Clarify",
                 "trust_score": "---",
                 "score_delta": "مدخلات غير مكتملة",
-                "score_note": "الاستفسار قصير جداً؛ يرجى صياغة السؤال بصورة واضحة.",
-                "message": "استفساركم قصير جداً؛ للمحافظة على دقة الاسترجاع الشرعي، نرجو صياغة السؤال بصورة كاملة وتوضيح القصد."
+                "score_note": "الاستفسار موجز جداً؛ يرجى صياغة السؤال بصورة واضحة.",
+                "message": "استفساركم موجز جداً. للمحافظة على دقة الاسترجاع الشرعي، نرجو صياغة السؤال بصورة كاملة وموضحة للمقصد."
             }
 
-        # الفحص الأول: اختبار تصحيح الآيات المنقولة بخطأ (شرط الحزمة المرجعية ص 6)
+        # الفحص الأول: اختبار تصحيح الآيات المنقولة بخطأ
         quran_error = self.check_quran_errors(clean_query)
         if quran_error:
             return {
-                "is_safe": True,
+                "is_safe": False,
                 "category": "Quran_Correction",
                 "action": "Gentle_Correction",
                 "trust_score": "100%",
@@ -85,7 +79,7 @@ class IslamicGuardrails:
                 )
             }
 
-        # الفحص الثاني: هل السؤال هو طلب فتوى أو نازلة فقهية معاصرة / نزاع فردي؟
+        # الفحص الثاني: هل السؤال هو طلب فتوى أو نازلة فقهية معاصرة؟
         if self._check_patterns(clean_query, self.fatwa_keywords):
             return {
                 "is_safe": False,
@@ -101,7 +95,7 @@ class IslamicGuardrails:
                 )
             }
 
-        # الفحص الثالث: تصنيف الأسئلة العقائدية للتعامل معها بصرامة نصية
+        # الفحص الثالث: الأسئلة العقائدية القطعية
         if self._check_patterns(clean_query, self.aqeedah_keywords):
             return {
                 "is_safe": True,
@@ -113,7 +107,7 @@ class IslamicGuardrails:
                 "message": "سؤال عقائدي قطعي، يوجه لمحرك البحث للالتزام الصارم بالنص القرآني وصحيح السنة."
             }
 
-        # الفحص الرابع: الأسئلة العامة والدعوية (المسار الطبيعي الموثوق)
+        # الفحص الرابع: الأسئلة المعرفية والدعوية العامة
         return {
             "is_safe": True,
             "category": "General_Dawah",
@@ -123,10 +117,3 @@ class IslamicGuardrails:
             "score_note": "مقياس مستند إلى دقة الإسناد وتطابق المتون مع مصادر التحدي المعتمدة.",
             "message": "سؤال آمن ومعرفي، مسموح بالمرور للمحركات."
         }
-
-if __name__ == "__main__":
-    guard = IslamicGuardrails()
-    print("--- اختبارات صمام الأمان المحدث ---")
-    print(guard.validate_query("الرياضة")["message"])
-    print(guard.validate_query("ما معنى قل هو الله أحد الله الصامد؟")["message"])
-    print(guard.validate_query("ما حكم الطلاق؟")["message"])
