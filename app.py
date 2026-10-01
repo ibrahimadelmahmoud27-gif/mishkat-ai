@@ -17,7 +17,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# 2. الهوية البصرية المعتمدة (كحلي #12183F - بنفسجي #6150EA - تركواز #2EF2C2)
+# 2. الهوية البصرية المعتمدة
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;600;700&display=swap');
@@ -70,21 +70,6 @@ st.markdown("""
         text-align: right;
         margin-bottom: 15px;
     }
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 8px;
-    }
-    .stTabs [data-baseweb="tab"] {
-        background-color: #F1F5F9;
-        border-radius: 6px;
-        padding: 6px 14px;
-        color: #12183F;
-        font-weight: 600;
-        font-size: 0.95rem;
-    }
-    .stTabs [aria-selected="true"] {
-        background-color: #6150EA !important;
-        color: white !important;
-    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -102,7 +87,7 @@ APPROVED_DICTIONARY = {
     "الدعوة": "Da'wah / Invitation: البلاغ المبين بالحكمة والموعظة الحسنة ومراعاة السياق الحضاري."
 }
 
-# 4. تهيئة الوحدات البرمجية
+# 4. تهيئة الوحدات
 @st.cache_resource
 def load_modules():
     return IslamicGuardrails(), IslamicRAGEngine(), LLMRouter()
@@ -114,7 +99,7 @@ if "messages" not in st.session_state:
 if "need_clarification" not in st.session_state:
     st.session_state.need_clarification = False
 
-# 5. القائمة الجانبية: التحكم باللغات والرحلة المعرفية
+# 5. القائمة الجانبية
 with st.sidebar:
     st.markdown("<div style='font-size: 48px; text-align: right; margin-bottom: 0px;'>🕌</div>", unsafe_allow_html=True)
     st.title("Mishkat AI (مشكاة)")
@@ -122,11 +107,9 @@ with st.sidebar:
     st.caption("المسار المفتوح | تحدي المحتوى الإسلامي 2026م")
     st.divider()
 
-    # تغطية المسار 02: التوطين واللغات
     st.subheader("🌐 لغة العرض والتوطين")
     selected_lang = st.radio("اختر اللغة / Language:", ["العربية (Arabic)", "English (المحتوى الموطن)"], index=0)
 
-    # تغطية المسار 03: الرحلة المعرفية المتدرجة
     st.subheader("🧭 نمط الرحلة المعرفية")
     user_track = st.selectbox(
         "تكييف الخطاب وسياق المعرفة وفق المستفيد:",
@@ -136,25 +119,19 @@ with st.sidebar:
     st.divider()
     st.subheader("🛡️ صمام الأمان والتحقق")
     st.write("• فحص النوازل وحظر الإفتاء: **مفعّل**")
-    st.write("• التفريق بين القطعي والاجتهادي: **مفعّل**")
+    st.write("• التنبيه اللطيف للآيات القرآنية: **مفعّل**")
     st.write("• توثيق المتون ورقم الحديث: **مفعّل**")
     
     st.divider()
     st.subheader("⚙️ استدامة التشغيل المجاني")
     st.write("• المحرك المعرفي الأساسي: **نشط 🟢**")
-    st.write("• محرك الطوارئ (التبديل التلقائي): **جاهز ⚡**")
+    st.write("• محرك الطوارئ (Groq Fallback): **جاهز ⚡**")
     st.success("الاعتمادات مؤمنة مجاناً 100% (صفر تكلفة)")
 
     st.divider()
-    st.markdown("""
-    <div style='text-align: right; font-size: 13px; color: #718096; line-height: 1.6;'>
-    <b>منصة مشكاة للذكاء الاصطناعي</b><br>
-    تطوير وهندسة: <b>إبراهيم عادل</b> (مشاركة فردية)<br>
-    (هندسة RAG، صمام الأمان، واستدامة السحابة)
-    </div>
-    """, unsafe_allow_html=True)
+    st.caption("تطوير وهندسة: إبراهيم عادل | منصة مشكاة للذكاء الاصطناعي")
 
-# 6. المنطقة الرئيسية عبر تبويبات وظيفية مختصرة
+# 6. التبويبات
 tab_chat, tab_verifier, tab_dictionary = st.tabs([
     "💬 الحوار الموثوق",
     "🔍 أداة التحقق",
@@ -173,7 +150,6 @@ with tab_chat:
         st.markdown(f'<p class="main-header">{header_title}</p>', unsafe_allow_html=True)
         st.markdown(f'<p class="sub-header">{sub_title}</p>', unsafe_allow_html=True)
 
-        # زر طلب مزيد من التوضيح
         c1, c2 = st.columns([1.5, 2.5])
         with c1:
             if st.button("❓ استفسار يحتاج مزيداً من التوضيح؟"):
@@ -183,7 +159,7 @@ with tab_chat:
             st.markdown("""
             <div class="clarification-box">
             <b>معالجة استباقية لنقص السؤال:</b><br>
-            إذا كان سؤالك يحتمل سياقات متعددة، يُرجى تحديد تفاصيل أكثر (مثال: هل تسأل عن الجانب التاريخي أم المفهوم العقدي أم هدي المعاملات اليومية؟) لمساعدتك بإسناد دقيق.
+            إذا كان سؤالك يحتمل سياقات متعددة، يُرجى تحديد تفاصيل أكثر لمساعدتك بإسناد دقيق.
             </div>
             """, unsafe_allow_html=True)
             if st.button("إغلاق التنبيه"):
@@ -203,79 +179,64 @@ with tab_chat:
                             st.markdown(f"**التوثيق:** {s.get('reference', '')} | **درجة الصحة:** `{s.get('authenticity', 'صحيح')}`")
                             st.markdown(f"> *«{s['text']}»*")
                             if s.get("url"):
-                                st.markdown(f"[رابط الإسناد الإلكتروني]({s['url']})")
+                                st.markdown(f"[رابط الإسناد الإلكتروني المباشر]({s['url']})")
 
         # إدخال السؤال
-        user_query = st.chat_input("اكتب استفسارك هنا (مثال: كيف كان النبي ﷺ يعامل جيرانه؟)...")
+        user_query = st.chat_input("اكتب استفسارك هنا (مثال: لماذا يعبد المسلمون الكعبة؟)...")
 
         if user_query:
             st.session_state.messages.append({"role": "user", "content": user_query})
             with st.chat_message("user"):
                 st.write(user_query)
 
-            # معالجة قصر السؤال الشديد كحالة نقص معطيات
-            if len(user_query.strip().split()) <= 1 and "?" not in user_query:
-                clarify_msg = "استفسارك موجز جداً. للمحافظة على الموثوقية الشرعية، نرجو صياغة السؤال بصورة كاملة موضحة للمقصد."
-                st.session_state.messages.append({"role": "assistant", "content": clarify_msg, "sources": [], "is_warning": True})
+            # 1. الفحص عبر صمام الأمان
+            validation = guardrails.validate_query(user_query)
+
+            if not validation["is_safe"]:
+                refusal_response = validation["message"]
+                st.session_state.messages.append({"role": "assistant", "content": refusal_response, "sources": [], "is_warning": True})
                 with st.chat_message("assistant"):
-                    st.markdown(f'<div class="warning-box">{clarify_msg}</div>', unsafe_allow_html=True)
-                st.session_state["current_trust"] = "90.0%"
-                st.session_state["trust_status"] = "طلب استيضاح"
-                st.session_state["trust_note"] = "تم تفعيل إجراء الامتناع المؤقت لعدم كفاية معطيات السؤال"
-                st.session_state["last_engine"] = "وكيل الاستيضاح المعرفي"
+                    st.markdown(f'<div class="warning-box">{refusal_response}</div>', unsafe_allow_html=True)
+                st.session_state["current_trust"] = validation.get("trust_score", "100%")
+                st.session_state["trust_status"] = validation.get("score_delta", "صمام الأمان نشط")
+                st.session_state["trust_note"] = validation.get("score_note", "")
+                st.session_state["last_engine"] = "صمام الأمان (حظر الإفتاء / التحقق)"
             else:
-                with st.spinner("جاري فحص الاستفسار عبر صمام الأمان الشرعي..."):
-                    validation = guardrails.validate_query(user_query)
+                # 2. الاسترجاع المعزز RAG
+                with st.spinner("جاري استرجاع المتون والمراجع المعتمدة..."):
+                    retrieved_docs = rag_engine.retrieve_context(user_query)
+                    trust_score = rag_engine.calculate_trust_score(retrieved_docs)
 
-                if not validation["is_safe"]:
-                    refusal_response = validation["message"]
-                    st.session_state.messages.append({"role": "assistant", "content": refusal_response, "sources": [], "is_warning": True})
+                if not retrieved_docs:
+                    no_ref_msg = (
+                        "عفواً، لا يتوافر نص مباشر معتمد لهذا السؤال في الحزمة العلمية الحالية للتحدي. "
+                        "التزاماً بمعايير الموثوقية وعدم توليد إجابات غير مسندة، نعتذر عن الإجابة التخمينية ونحيل السائل للمراجع المعتمدة."
+                    )
+                    st.session_state.messages.append({"role": "assistant", "content": no_ref_msg, "sources": [], "is_warning": True})
                     with st.chat_message("assistant"):
-                        st.markdown(f'<div class="warning-box">{refusal_response}</div>', unsafe_allow_html=True)
-                    st.session_state["current_trust"] = "100%"
-                    st.session_state["trust_status"] = "أمان وحظر معتمد"
-                    st.session_state["trust_note"] = "تم اعتراض طلب الفتوى وإحالته رسمياً للجهات المختصة"
-                    st.session_state["last_engine"] = "صمام الأمان (حظر الإفتاء نشط)"
+                        st.markdown(f'<div class="warning-box">{no_ref_msg}</div>', unsafe_allow_html=True)
+                    st.session_state["current_trust"] = "90.0%"
+                    st.session_state["trust_status"] = "امتناع موثق"
+                    st.session_state["trust_note"] = "تم تفعيل سياسة الامتناع التام لغياب السند الكافي منعاً للهلوforkسة"
+                    st.session_state["last_engine"] = "وكيل التحقق والموثوقية"
                 else:
-                    with st.spinner("جاري استرجاع المتون والمراجع المعتمدة..."):
-                        retrieved_docs = rag_engine.retrieve_context(user_query)
-                        trust_score = rag_engine.calculate_trust_score(retrieved_docs)
-                        system_context = f"نمط المستفيد: {user_track} | اللغة المحددة: {selected_lang}"
-                        augmented_prompt = rag_engine.build_augmented_prompt(f"{system_context}\nالسؤال: {user_query}", retrieved_docs)
+                    target_lang = "en" if "English" in selected_lang or any(c in 'abcdefghijklmnopqrstuvwxyz' for c in user_query.lower()) else "ar"
+                    augmented_prompt = rag_engine.build_augmented_prompt(user_query, retrieved_docs, language=target_lang)
 
-                    with st.spinner("جاري صياغة وتوثيق الإجابة المعتمدة..."):
-                        try:
-                            generation_result = llm_router.generate_response(augmented_prompt)
-                        except Exception:
-                            generation_result = {"success": False}
+                    with st.spinner("جاري صياغة الإجابة المعتمدة..."):
+                        generation_result = llm_router.generate_response(augmented_prompt)
 
-                    # آلية الصمود والاستدامة: عرض المتون الموثقة مباشرة في حال تأخر أو انقطاع مفاتيح الـ API
-                    if generation_result.get("success", False) and generation_result.get("response"):
+                    # إذا نجح LLM Router، نأخذ مخرجاته، وإلا نعرض النص المعتمد الأصلي مباشرة
+                    if generation_result.get("success"):
                         response_text = generation_result["response"]
-                        engine_name = "محرك مشكاة المعرفي (النمط الأساسي)"
                     else:
-                        engine_name = "محرك مشكاة المعرفي (استرجاع مباشر موثق)"
-                        main_texts = [f"• {doc['text']}" for doc in retrieved_docs if doc.get('text')]
-                        if not main_texts:
-                            main_texts = ["ورد في الصحيحين الحث البالغ على صلة الجار ورعاية حقوقه والإحسان إليه قولاً وعملاً."]
-                        
-                        response_text = (
-                            "أهلاً بك عبر منصة مشكاة لخدمة المعرفة والتواصل الحضاري.\n\n"
-                            "تُبرز النصوص الشرعية المكانة الرفيعة للجار في الإسلام، وتؤكد على عظم فضل الإحسان إليه والاهتمام بحقوقه، كما ورد في أمهات كتب السنة المعتمدة:\n\n"
-                            + "\n\n".join(main_texts)
-                            + "\n\n(يُرجى الاطلاع على هوامش التوثيق أدناه لمعرفة موضع الحديث في صحيح البخاري ورقم الباب)."
-                        )
+                        response_text = retrieved_docs[0]["text"]
 
-                    st.session_state.messages.append({
-                        "role": "assistant",
-                        "content": response_text,
-                        "sources": retrieved_docs,
-                        "is_warning": False
-                    })
-                    st.session_state["current_trust"] = f"{trust_score}%" if isinstance(trust_score, (int, float)) else str(trust_score)
+                    st.session_state.messages.append({"role": "assistant", "content": response_text, "sources": retrieved_docs, "is_warning": False})
+                    st.session_state["current_trust"] = f"{trust_score}%"
                     st.session_state["trust_status"] = "مطابق للأصول الشرعية"
-                    st.session_state["trust_note"] = "مقاس استناداً إلى تطابق المتون المسترجعة مع أوعية التحدي المعتمدة"
-                    st.session_state["last_engine"] = engine_name
+                    st.session_state["trust_note"] = "مقياس استناداً إلى تطابق المتون المسترجعة مع مصادر التحدي المعتمدة"
+                    st.session_state["last_engine"] = "محرك مشكاة المعرفي (استرجاع مباشر موثق)"
 
                     with st.chat_message("assistant"):
                         st.write(response_text)
@@ -285,14 +246,14 @@ with tab_chat:
                                 st.markdown(f"**التوثيق:** {s.get('reference', '')} | **درجة الصحة:** `{s.get('authenticity', 'صحيح')}`")
                                 st.markdown(f"> *«{s['text']}»*")
                                 if s.get("url"):
-                                    st.markdown(f"[رابط الإسناد الإلكتروني]({s['url']})")
+                                    st.markdown(f"[رابط الإسناد الإلكتروني المباشر]({s['url']})")
 
     with col_metrics:
         st.markdown("### 📊 لوحة التدقيق والموثوقية")
         current_trust = st.session_state.get("current_trust", "98.8%")
         trust_status = st.session_state.get("trust_status", "مطابق للأصول الشرعية")
-        trust_note = st.session_state.get("trust_note", "مقاس استناداً إلى دقة الإسناد وتطابق المتون مع مصادر التحدي المعتمدة")
-        last_engine = st.session_state.get("last_engine", "محرك مشكاة المعرفي (النمط الأساسي)")
+        trust_note = st.session_state.get("trust_note", "مقياس استناداً إلى دقة الإسناد وتطابق المتون مع مصادر التحدي المعتمدة")
+        last_engine = st.session_state.get("last_engine", "محرك مشكاة المعرفي (استرجاع مباشر موثق)")
 
         st.markdown(f"""
         <div class="trust-card">
@@ -314,37 +275,44 @@ with tab_chat:
         st.caption("2. موسوعة مفردات المحتوى - الجمهرة (islamic-content.com)")
         st.caption("3. مصحف مجمع الملك فهد وترجماته (quranpedia.net)")
         st.caption("4. موسوعة الحديث والتفسير (dorar.net)")
-        st.caption("5. منصة بينات للرد على الشبهات (dawa.center/file/7937)")
 
 # ==========================================
-# التبويب 2: تغطية المسار 04 (أداة التحقق لتمكين المعرّفين)
+# التبويب 2: أداة التحقق والتخريج الفوري الديناميكية
 # ==========================================
 with tab_verifier:
     st.subheader("🔍 أداة التحقق والتخريج الفوري لتمكين المعرّفين والدعاة")
     st.write("ضع نص الحديث النبوي أو المقولة أو الشبهة للتحقق من ثبوتها وصحة عزوها للمصادر المعتمدة:")
 
-    verify_input = st.text_area("أدخل النص المراد تدقيقه:", placeholder="مثال: ما زال جبريل يوصيني بالجار حتى ظننت أنه سيورثه...")
+    verify_input = st.text_area("أدخل النص المراد تدقيقه:", placeholder="مثال: اطلبوا العلم ولو في الصين...")
     if st.button("🚀 تدقيق النص واستخراج بطاقة الإسناد"):
         if verify_input:
             with st.spinner("جاري فحص المتن في قواعد بيانات الصحيحين ودرر السنية..."):
-                retrieved_docs = rag_engine.retrieve_context(verify_input)
-                score = rag_engine.calculate_trust_score(retrieved_docs)
-            st.success(f"نتيجة التدقيق: النص مسند بنسبة ثقة {score}%")
-            col_v1, col_v2 = st.columns(2)
-            with col_v1:
-                st.info("📌 **بطاقة التخريج المعتمدة:**")
-                st.write("• **الكتاب:** صحيح البخاري (كتاب الأدب)")
-                st.write("• **الباب:** باب الوصاة بالجار (حديث رقم 6014)")
-                st.write("• **الحكم الحديثي:** صحيح متفق عليه")
-            with col_v2:
-                st.warning("⚖️ **التصنيف وفق مستويات المحتوى:**")
-                st.write("• **المستوى:** المستوى (أ) - معلومات أصلية مستقرة")
-                st.write("• **الإجراء المعتمد:** الإجابة المباشرة الموثقة بالمصدر دون إخلال")
+                results = rag_engine.retrieve_context(verify_input)
+                score = rag_engine.calculate_trust_score(results)
+
+            if results:
+                target = results[0]
+                st.success(f"نتيجة التدقيق: تمت مطابقة النص بنسبة ثقة {score}%")
+                col_v1, col_v2 = st.columns(2)
+                with col_v1:
+                    st.info("📌 **بطاقة التخريج المعتمدة:**")
+                    st.write(f"• **المصدر:** {target['source']}")
+                    st.write(f"• **الباب والموضع:** {target['section']}")
+                    st.write(f"• **التوثيق:** {target['reference']}")
+                    st.write(f"• **الحكم والدرجة:** `{target['authenticity']}`")
+                    if target.get("url"):
+                        st.markdown(f"[رابط الإسناد في الدرر السنية]({target['url']})")
+                with col_v2:
+                    st.warning("⚖️ **التصنيف وفق مستويات المحتوى:**")
+                    st.write("• **المستوى:** معتمد وموثق في الحزمة المرجعية")
+                    st.write(f"• **النص المعتمد المقابل:** {target['text']}")
+            else:
+                st.error("لم يتم العثور على أصل لهذا النص في الأوعية المعتمدة؛ يوصى بالتثبت والرجوع لعلماء الحديث المختصين.")
         else:
             st.error("يُرجى إدخال نص للتحقق منه أولاً.")
 
 # ==========================================
-# التبويب 3: تغطية المسار 02 (قاموس المصطلحات الموطّنة)
+# التبويب 3: قاموس المصطلحات الموطّنة
 # ==========================================
 with tab_dictionary:
     st.subheader("📖 المعجم المعتمد لترجمة وتوطين المصطلحات الشرعية (الحزمة العلمية ص 8)")
