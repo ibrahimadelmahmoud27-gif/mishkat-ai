@@ -10,7 +10,7 @@ from groq import Groq
 
 class LLMRouter:
     def __init__(self, gemini_key: str = None, groq_key: str = None):
-        # قراءة المفاتيح بأمان من متغيرات البيئة السحابية، مع خيار التمرير المباشر
+        # قراءة المفاتيح بأمان من متغيرات البيئة السحابية (Streamlit Secrets)، مع خيار التمرير المباشر
         self.gemini_key = gemini_key or os.getenv("GEMINI_API_KEY", "")
         self.groq_key = groq_key or os.getenv("GROQ_API_KEY", "")
 
@@ -47,7 +47,7 @@ class LLMRouter:
     def generate_response(self, prompt: str) -> dict:
         """
         دالة التوجيه والتبديل التلقائي (Fallback Mechanism):
-        تحاول أولاً مع Gemini، وإذا حدث أي عطل سحابي أو ضغط (مثل خطأ 503)،
+        تحاول أولاً مع Gemini، وإذا حدث أي عطل سحابي أو ضغط،
         تنتقل فوراً إلى Groq لضمان بقاء النظام متاحاً بنسبة 100%.
         """
         # المحاولة الأولى: المحرك الأساسي
