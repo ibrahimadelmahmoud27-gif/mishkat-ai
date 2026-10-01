@@ -71,14 +71,15 @@ st.markdown("""
         margin-bottom: 15px;
     }
     .stTabs [data-baseweb="tab-list"] {
-        gap: 10px;
+        gap: 8px;
     }
     .stTabs [data-baseweb="tab"] {
         background-color: #F1F5F9;
         border-radius: 6px;
-        padding: 8px 16px;
+        padding: 6px 14px;
         color: #12183F;
         font-weight: 600;
+        font-size: 0.95rem;
     }
     .stTabs [aria-selected="true"] {
         background-color: #6150EA !important;
@@ -115,7 +116,7 @@ if "need_clarification" not in st.session_state:
 
 # 5. القائمة الجانبية: التحكم باللغات والرحلة المعرفية
 with st.sidebar:
-st.sidebar.markdown("<div style='font-size: 55px; text-align: right; margin-bottom: 0px;'>🕌</div>", unsafe_allow_html=True)
+    st.markdown("<div style='font-size: 48px; text-align: right; margin-bottom: 0px;'>🕌</div>", unsafe_allow_html=True)
     st.title("Mishkat AI (مشكاة)")
     st.markdown("**«نُعلّم الآلة.. لتخدم الرسالة»**")
     st.caption("المسار المفتوح | تحدي المحتوى الإسلامي 2026م")
@@ -153,11 +154,11 @@ st.sidebar.markdown("<div style='font-size: 55px; text-align: right; margin-bott
     </div>
     """, unsafe_allow_html=True)
 
-# 6. المنطقة الرئيسية عبر تبويبات وظيفية (تغطي المسارات كاملة)
+# 6. المنطقة الرئيسية عبر تبويبات وظيفية مختصرة للهاتف
 tab_chat, tab_verifier, tab_dictionary = st.tabs([
-    "💬 الحوار المعرفي الموثوق (RAG Chat)",
-    "🔍 أداة التحقق وتخريج الأسانيد (Fact-Checker)",
-    "📖 قاموس المصطلحات الموطّنة (Approved Dictionary)"
+    "💬 الحوار الموثوق",
+    "🔍 أداة التحقق",
+    "📖 معجم المصطلحات"
 ])
 
 # ==========================================
@@ -172,7 +173,7 @@ with tab_chat:
         st.markdown(f'<p class="main-header">{header_title}</p>', unsafe_allow_html=True)
         st.markdown(f'<p class="sub-header">{sub_title}</p>', unsafe_allow_html=True)
 
-        # زر طلب مزيد من التوضيح (المعيار ص 5 و ص 8)
+        # زر طلب مزيد من التوضيح
         c1, c2 = st.columns([1.5, 2.5])
         with c1:
             if st.button("❓ استفسار يحتاج مزيداً من التوضيح؟"):
@@ -181,7 +182,7 @@ with tab_chat:
         if st.session_state.need_clarification:
             st.markdown("""
             <div class="clarification-box">
-            <b>معالجة استباقية لنقص السؤال (وفق المعيار ص 5):</b><br>
+            <b>معالجة استباقية لنقص السؤال:</b><br>
             إذا كان سؤالك يحتمل سياقات متعددة، يُرجى تحديد تفاصيل أكثر (مثال: هل تسأل عن الجانب التاريخي أم المفهوم العقدي أم هدي المعاملات اليومية؟) لمساعدتك بإسناد دقيق.
             </div>
             """, unsafe_allow_html=True)
@@ -239,7 +240,6 @@ with tab_chat:
                     with st.spinner("جاري استرجاع المتون والمراجع المعتمدة..."):
                         retrieved_docs = rag_engine.retrieve_context(user_query)
                         trust_score = rag_engine.calculate_trust_score(retrieved_docs)
-                        # تكييف البرومبت بحسب المسار ولغة المستفيد
                         system_context = f"نمط المستفيد: {user_track} | اللغة المحددة: {selected_lang}"
                         augmented_prompt = rag_engine.build_augmented_prompt(f"{system_context}\nالسؤال: {user_query}", retrieved_docs)
 
