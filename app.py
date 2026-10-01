@@ -115,7 +115,7 @@ if "need_clarification" not in st.session_state:
 
 # 5. القائمة الجانبية: التحكم باللغات والرحلة المعرفية
 with st.sidebar:
-    st.image("https://img.icons8.com/isometric/100/mosque.png", width=70)
+st.sidebar.markdown("<div style='font-size: 55px; text-align: right; margin-bottom: 0px;'>🕌</div>", unsafe_allow_html=True)
     st.title("Mishkat AI (مشكاة)")
     st.markdown("**«نُعلّم الآلة.. لتخدم الرسالة»**")
     st.caption("المسار المفتوح | تحدي المحتوى الإسلامي 2026م")
